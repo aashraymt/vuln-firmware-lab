@@ -1,0 +1,4 @@
+AUTH letmein
+WRITE 1 4142
+CFG k
+LOG hi

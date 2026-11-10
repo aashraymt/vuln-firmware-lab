@@ -1,0 +1,2 @@
+firmware/commands.c:125:5: runtime error: index 32 out of bounds for type 'char[32]'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior firmware/commands.c:125:5 

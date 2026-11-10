@@ -1,0 +1,13 @@
+# Vuln-Firmware protocol dictionary
+cmd_ping="PING"
+cmd_version="VERSION"
+cmd_help="HELP"
+cmd_auth="AUTH "
+cmd_write="WRITE "
+cmd_cfg="CFG "
+cmd_log="LOG "
+cmd_reset="RESET"
+fmt_x="%x"
+fmt_s="%s"
+fmt_n="%n"
+nl="\x0a"

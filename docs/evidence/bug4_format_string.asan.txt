@@ -1,0 +1,17 @@
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==2227==ERROR: AddressSanitizer: SEGV on unknown address 0x7fffffffffff (pc 0x5633f8061350 bp 0x7fff95235a70 sp 0x7fff952351f8 T0)
+==2227==The signal is caused by a READ memory access.
+    #0 0x5633f8061350 in __sanitizer::internal_strlen(char const*) (/home/claude/vuln-firmware-lab/build/target_asan+0xe0350) (BuildId: 01ec14361a0fca2ae99f99fd1e4e17f252f11b34)
+    #1 0x5633f7fd3421 in printf_common(void*, char const*, __va_list_tag*) asan_interceptors.cpp.o
+    #2 0x5633f7fd4fdd in printf (/home/claude/vuln-firmware-lab/build/target_asan+0x53fdd) (BuildId: 01ec14361a0fca2ae99f99fd1e4e17f252f11b34)
+    #3 0x5633f808a2fc in cmd_log /home/claude/vuln-firmware-lab/firmware/commands.c:140:5
+    #4 0x5633f8088137 in fw_handle_line /home/claude/vuln-firmware-lab/firmware/firmware.c:64:9
+    #5 0x5633f8089234 in main /home/claude/vuln-firmware-lab/firmware/firmware.c:116:26
+    #6 0x7feb70a2a1c9 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+    #7 0x7feb70a2a28a in __libc_start_main csu/../csu/libc-start.c:360:3
+    #8 0x5633f7fae364 in _start (/home/claude/vuln-firmware-lab/build/target_asan+0x2d364) (BuildId: 01ec14361a0fca2ae99f99fd1e4e17f252f11b34)
+
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV (/home/claude/vuln-firmware-lab/build/target_asan+0xe0350) (BuildId: 01ec14361a0fca2ae99f99fd1e4e17f252f11b34) in __sanitizer::internal_strlen(char const*)
+==2227==ABORTING
