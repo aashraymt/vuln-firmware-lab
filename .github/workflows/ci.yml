@@ -1,0 +1,99 @@
+name: ci
+
+# Proves the lab from a clean checkout on every push/PR:
+#   * detect  (gating)     : build + benign traffic + each reproducer trips its
+#                            exact sanitizer finding. Deterministic -> required.
+#   * exploit (non-gating) : the stack-smash actually pops a shell. The return-
+#                            address scan is stack-layout sensitive across hosts,
+#                            so this job reports but never blocks a green build.
+#
+# Runner: ubuntu-latest (24.04) -> clang 18, so libclang-rt-18-dev is the ASAN
+# runtime. Bump the version here if the runner image moves to a newer clang.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  detect:
+    name: build + bug detection (gating)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            gcc gdb make binutils \
+            clang llvm libclang-rt-18-dev \
+            afl++ \
+            python3 util-linux
+
+      - name: Build all variants
+        run: make build
+
+      - name: Sanitizer builds exist
+        run: |
+          for b in build/target_asan build/target_exploit build/fuzz_libfuzzer; do
+            test -x "$b" && echo "ok: $b" || { echo "MISSING: $b"; exit 1; }
+          done
+
+      - name: Benign protocol behaves correctly
+        run: |
+          out=$(printf 'PING\nVERSION\nAUTH letmein\nCFG hello\n' | ./build/target_exploit)
+          echo "$out"
+          grep -q 'PONG'          <<<"$out"
+          grep -q 'AUTH ok'       <<<"$out"
+          grep -q 'CFG set: hello' <<<"$out"
+
+      - name: Each reproducer trips its sanitizer finding
+        env:
+          ASAN_OPTIONS: detect_leaks=0:abort_on_error=0:exitcode=99:handle_segv=1
+          UBSAN_OPTIONS: halt_on_error=1:abort_on_error=0:exitcode=99
+        run: |
+          fail=0
+          check() {  # <repro-file> <regex> <label>
+            local out
+            out=$(./build/target_asan < "tests/repro/$1" 2>&1 || true)
+            if grep -qE "$2" <<<"$out"; then
+              echo "PASS  $3"
+            else
+              echo "FAIL  $3 (wanted /$2/)"; fail=1
+            fi
+          }
+          check bug1_stack_overflow.bin    "AddressSanitizer: stack-buffer-overflow"                     "BUG1 stack overflow (cmd_auth)"
+          check bug2_int_heap_overflow.bin "AddressSanitizer: heap-buffer-overflow"                      "BUG2 int->heap overflow (cmd_write)"
+          check bug2b_write_zero_alloc.bin "AddressSanitizer: heap-buffer-overflow"                      "BUG2b zero-alloc heap overflow"
+          check bug3_off_by_one.bin        "out of bounds for type 'char\[32\]'|stack-buffer-overflow"   "BUG3 off-by-one (cmd_cfg)"
+          check bug4_format_string.bin     "AddressSanitizer: SEGV"                                      "BUG4 format string (cmd_log)"
+          exit $fail
+
+  exploit:
+    name: stack-smash exploit (non-gating)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc make python3 util-linux
+
+      - name: Build exploit target
+        run: make build
+
+      - name: Pop a shell via BUG 1
+        run: |
+          out=$(timeout 220 python3 exploit/exploit.py \
+                  --base 0x7fffffffe300 --window 0x4000 --step 8 || true)
+          echo "$out"
+          if grep -q 'uid=' <<<"$out"; then
+            echo "SHELL POPPED on this runner"
+          else
+            echo "exploit did not land in this runner's stack layout"
+            echo "(the address scan is host-sensitive; the gating 'detect' job proves the bugs)"
+            exit 1
+          fi

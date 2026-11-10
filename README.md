@@ -1,5 +1,7 @@
 # Vuln-Firmware Lab
 
+[![ci](https://github.com/aashraymt/vuln-firmware-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/aashraymt/vuln-firmware-lab/actions/workflows/ci.yml)
+
 A deliberately vulnerable firmware-style target and the offensive tooling that
 breaks it, end to end: **plant the bugs → fuzz them out → triage the crashes →
 weaponize one into a shell → write the fix.**
@@ -114,3 +116,17 @@ deliberately stripped — is where the stack smash is *weaponized*.
 See `docs/00-overview.md` for the full workflow narrative and
 `docs/fuzzing-notes.md` for why AFL++ found the stack overflow that libFuzzer
 stalled on.
+
+## Documentation
+
+The `docs/` tree is published as a GitBook (`.gitbook.yaml` + `docs/SUMMARY.md`):
+Overview → the four bug write-ups → exploit walkthrough → fuzzing notes.
+
+## Security & responsible use
+
+This is an intentionally vulnerable training target — do not deploy it or reuse
+its handlers. Scope and reporting guidance are in [SECURITY.md](SECURITY.md).
+
+## License
+
+[MIT](LICENSE), with an intentionally-vulnerable-code notice.
