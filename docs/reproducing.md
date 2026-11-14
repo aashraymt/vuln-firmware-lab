@@ -88,8 +88,11 @@ Expected tail:
 [*] stack top: 0x7ffffffff000 (from /proc/<pid>/maps)
 [+] SHELL via buffer @ 0x7fffffff5f10 (top-0x90f0, after 2064 tries)
 [+] proof:
-      uid=0(root) gid=0(root) groups=0(root)
+      uid=1000(stratcat_08) gid=1000(stratcat_08) groups=1000(stratcat_08),27(sudo),100(users)
 ```
+
+The uid is whoever runs the target, not necessarily root; the exploit is code
+execution in the target's context.
 
 The stack top and the exact buffer address vary between machines, so the exploit
 reads the target's own stack region from `/proc/<pid>/maps` and scans downward

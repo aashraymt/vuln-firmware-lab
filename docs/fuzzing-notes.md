@@ -18,8 +18,8 @@ dictionary:
 | 4, format string, `cmd_log`        | found  | found |
 | bonus, UBSAN negative shift, `hexdecode` | not seen | found |
 
-In a 40 second AFL++ run I measured 29 unique crashing inputs saved, covering all
-four planted bugs plus the unplanted UBSAN finding. libFuzzer in a comparable run
+In a 60 second AFL++ run I measured two dozen unique crashing inputs saved, which
+triage down to the planted bugs plus the unplanted UBSAN finding. libFuzzer in a comparable run
 harvested bugs 2, 3, and 4 across thousands of crash files, which `triage.sh`
 buckets down to the three distinct roots, and did not reach bug 1.
 
@@ -72,4 +72,4 @@ for c in build/afl_out/default/crashes/id:*; do ./build/target_asan < "$c"; done
 ```
 
 The same harness over the hardened handlers finds nothing in the same budget.
-That contrast, 29 crashes versus 0, is the subject of [hardening.md](hardening.md).
+That contrast, two dozen crashes versus 0, is the subject of [hardening.md](hardening.md).

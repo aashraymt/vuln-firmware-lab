@@ -89,12 +89,12 @@ search strategy, not the target.
 libFuzzer is coverage guided. Reaching `cmd_auth` needs only `AUTH x`, and that
 short line already covers the `strcpy` edge. Growing the argument from 6 bytes
 toward the 64 that overflow produces no new coverage, so there is no gradient
-telling libFuzzer to make the argument longer. In a 40 second run over the
+telling libFuzzer to make the argument longer. In a 60 second run over the
 vulnerable build, libFuzzer harvested bugs 2, 3, and 4 but not bug 1.
 
 AFL++'s havoc and splice stages grow input length aggressively and
-independently of coverage. In the same 40 seconds it saved 29 crashing inputs
-covering all four planted bugs plus the UBSAN finding, and its queue contained
+independently of coverage. In the same 60 seconds it saved two dozen crashing inputs
+that triage down to the planted bugs plus the UBSAN finding, and its queue contained
 `AUTH` lines well past 64 bytes. The measurement and the reasoning are in
 [fuzzing-notes.md](fuzzing-notes.md). The lesson is that coverage guidance is
 strong for branch structured logic and weak for size structured bugs, and
@@ -108,8 +108,8 @@ with the stack protector, PIE, and NX removed. It finds the 72 byte offset to
 the saved return address with a De Bruijn pattern, drops NUL free
 `execve("/bin/sh")` shellcode behind a NOP sled, defeats the stack address NUL
 byte problem by writing only the low six bytes of the return address, disables
-ASLR for the child alone with `setarch -R`, and scans a small window of return
-addresses until the shell answers a nonce. The full walk through is in
+ASLR for the child alone with `setarch -R`, and reads the target's own stack top from `/proc/<pid>/maps` to
+scan down to the buffer, confirming the hit with a nonce. The full walk through is in
 [exploit-walkthrough.md](exploit-walkthrough.md), and the consequences of
 turning NX back on, including why a single line ROP chain is blocked by the
 `strcpy` NUL constraint, are in [nx-and-rop.md](nx-and-rop.md).
@@ -117,7 +117,7 @@ turning NX back on, including why a single line ROP chain is blocked by the
 Defense: `firmware/commands_fixed.c` is the same set of handlers with every bug
 fixed by the minimal correct change. Linking the firmware against it produces a
 build that handles every curated reproducer cleanly and that AFL++ runs over
-without finding a single crash, where the vulnerable build gives up 29 crashes
+without finding a single crash, where the vulnerable build gives up two dozen crashes
 in the same time. That contrast is the eCTF design phase in miniature and is
 written up in [hardening.md](hardening.md).
 

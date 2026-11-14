@@ -103,8 +103,8 @@ same seeds and dictionary used against the vulnerable build. Same harness, same
 time budget, side by side:
 
 ```
-vulnerable handlers (build/fuzz_afl)   40s  ->  29 unique crashes saved
-hardened   handlers (build/fuzz_fixed) 40s  ->   0 unique crashes saved
+vulnerable handlers (build/fuzz_afl)   60s  ->  24 unique crashes saved
+hardened   handlers (build/fuzz_fixed) 60s  ->   0 unique crashes saved
 ```
 
 Run it with `FUZZ_SECS=60 bash tests/verify_fixed.sh`, which adds a campaign
