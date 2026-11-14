@@ -30,9 +30,9 @@ of the lab, not accidents.
 
 ## Reporting *unintended* problems
 
-If you find a defect that is **not** part of the documented lab — for example
+If you find a defect that is **not** part of the documented lab, for example
 the build scripts failing on a supported platform, a bug in the harness or
-triage tooling, or an error in the documentation — please open a GitHub Issue
+triage tooling, or an error in the documentation, please open a GitHub Issue
 describing:
 
 - what you ran (OS, compiler versions, command),

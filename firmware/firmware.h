@@ -1,4 +1,4 @@
-/* firmware.h — Vuln-Firmware Lab
+/* firmware.h, Vuln-Firmware Lab
  *
  * A deliberately vulnerable "device" modeled on an eCTF-style target:
  * a command parser speaking a line-oriented ASCII protocol over what would

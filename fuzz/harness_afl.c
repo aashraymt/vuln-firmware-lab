@@ -1,4 +1,4 @@
-/* harness_afl.c — AFL++ persistent-mode harness.
+/* harness_afl.c, AFL++ persistent-mode harness.
  *
  * Persistent mode runs many testcases per forked process, which is 10-100x
  * faster than classic fork-per-input. __AFL_LOOP(N) re-enters the loop up to
@@ -42,7 +42,7 @@ int main(void)
     return 0;
 }
 
-#else   /* not built with afl-clang-fast — degrade to a one-shot stdin runner */
+#else   /* not built with afl-clang-fast, degrade to a one-shot stdin runner */
 
 int main(void)
 {

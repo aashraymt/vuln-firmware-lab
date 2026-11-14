@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# verify.sh — end-to-end self-check for the whole lab.
+# verify.sh, end-to-end self-check for the whole lab.
 #
 # Proves, from a clean build:
 #   * the device handles benign traffic correctly
@@ -45,7 +45,7 @@ check_repro bug2b_write_zero_alloc.bin "AddressSanitizer: heap-buffer-overflow" 
 check_repro bug3_off_by_one.bin        "out of bounds for type 'char\[32\]'|stack-buffer-overflow" "BUG3 off-by-one (cmd_cfg)"
 check_repro bug4_format_string.bin     "AddressSanitizer: SEGV"                          "BUG4 format string (cmd_log)"
 
-hdr "4. exploit — stack smash pops a shell"
+hdr "4. exploit, stack smash pops a shell"
 if command -v setarch >/dev/null 2>&1; then
     EOUT=$(timeout 160 python3 exploit/exploit.py --base 0x7fffffff5440 --window 0x1400 --step 8 2>/dev/null)
     if grep -q "uid=" <<<"$EOUT"; then

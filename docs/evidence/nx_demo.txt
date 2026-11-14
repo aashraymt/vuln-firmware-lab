@@ -1,0 +1,13 @@
+[1] ret2shellcode against the NX build
+    scanning a window of return addresses, same technique as the
+    execstack exploit ...
+    tried 256 return addresses, no shell.
+    NX stopped the stack shellcode from executing.
+
+[2] control-flow hijack under NX (proved with gdb)
+    overwrote the saved return address with 0x424242424242
+    faulting RIP reported by gdb: 0x424242424242
+    result: RIP is fully attacker-controlled under NX.
+
+summary: NX removes stack shellcode (blocked) but not RIP control (kept).
+see docs/nx-and-rop.md for why a single-line ROP chain is blocked here.

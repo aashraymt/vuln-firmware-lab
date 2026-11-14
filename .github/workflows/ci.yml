@@ -70,6 +70,21 @@ jobs:
           check bug4_format_string.bin     "AddressSanitizer: SEGV"                                      "BUG4 format string (cmd_log)"
           exit $fail
 
+  harden:
+    name: hardened build is not vulnerable (gating)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            gcc make binutils clang llvm libclang-rt-18-dev afl++ python3 util-linux
+
+      - name: Build and prove the hardened handlers
+        run: bash tests/verify_fixed.sh
+
   exploit:
     name: stack-smash exploit (non-gating)
     runs-on: ubuntu-latest

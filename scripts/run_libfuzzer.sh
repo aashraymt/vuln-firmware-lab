@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run_libfuzzer.sh — coverage-guided fuzzing with clang libFuzzer.
+# run_libfuzzer.sh, coverage-guided fuzzing with clang libFuzzer.
 #
 # Fork mode (-fork) keeps fuzzing after a crash and writes every distinct
 # crash to the artifact dir, so one run harvests all the planted bugs instead

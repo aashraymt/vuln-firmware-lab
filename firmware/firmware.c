@@ -1,4 +1,4 @@
-/* firmware.c — protocol parser, command dispatch, and stdin front-end.
+/* firmware.c, protocol parser, command dispatch, and stdin front-end.
  *
  * This file is deliberately NOT where the memory bugs live: it is the
  * plumbing that a real serial client and the fuzzer both drive. Keeping the
@@ -105,7 +105,7 @@ int main(void)
      * mirrors a real device draining a serial RX buffer, and it means that
      * if a handler transfers control elsewhere (as the AUTH overflow does in
      * the exploit), the bytes still queued on stdin are left for whatever now
-     * owns the process — they are not pre-consumed here. The fuzzers do not
+     * owns the process, they are not pre-consumed here. The fuzzers do not
      * use this path; they call fw_feed() directly. */
     char line[FW_MAX_LINE + 1];
     size_t pos = 0;

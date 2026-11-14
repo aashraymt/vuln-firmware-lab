@@ -1,4 +1,4 @@
-/* commands.c — the vulnerable command handlers.
+/* commands.c, the vulnerable command handlers.
  *
  * Each handler below contains ONE intentional, documented memory-safety bug.
  * The bugs are independent (distinct root causes) so the fuzzer can find each
@@ -36,7 +36,7 @@ static int check_token(const char *tok)
 }
 
 /* ===================================================================== *
- * BUG 1 — Stack buffer overflow  (CWE-121)                              *
+ * BUG 1, Stack buffer overflow  (CWE-121)                              *
  *                                                                       *
  *   `token` is a fixed 64-byte stack buffer. strcpy() copies the caller *
  *   -controlled argument with no length check, so any AUTH argument >=  *
@@ -72,7 +72,7 @@ static size_t hexdecode(const char *hex, uint8_t *out, size_t out_cap)
 }
 
 /* ===================================================================== *
- * BUG 2 — Integer overflow leading to heap overflow  (CWE-190 -> 787)   *
+ * BUG 2, Integer overflow leading to heap overflow  (CWE-190 -> 787)   *
  *                                                                       *
  *   The client sends a record `count` and a hex payload. The allocation *
  *   size is computed as `count * RECORD_SIZE` in 32-bit arithmetic, so  *
@@ -90,7 +90,7 @@ void cmd_write(const char *count_str, const char *hexdata)
     uint8_t *region = (uint8_t *)malloc(alloc_size ? alloc_size : 1);
     if (!region) { puts("WRITE nomem"); return; }
 
-    /* Decode as many payload bytes as the hex string contains — this is
+    /* Decode as many payload bytes as the hex string contains, this is
      * driven by the input length, NOT by alloc_size, so a short alloc and
      * a long payload collide on the heap. */
     size_t hexlen  = strlen(hexdata);
@@ -105,7 +105,7 @@ void cmd_write(const char *count_str, const char *hexdata)
 }
 
 /* ===================================================================== *
- * BUG 3 — Off-by-one  (CWE-193)                                         *
+ * BUG 3, Off-by-one  (CWE-193)                                         *
  *                                                                       *
  *   The length guard uses `>` where it must use `>=`. A key of exactly  *
  *   sizeof(buf) bytes passes the check, memcpy fills the buffer to the  *
@@ -128,7 +128,7 @@ void cmd_cfg(const char *key)
 }
 
 /* ===================================================================== *
- * BUG 4 — Uncontrolled format string  (CWE-134)                         *
+ * BUG 4, Uncontrolled format string  (CWE-134)                         *
  *                                                                       *
  *   The user-supplied message is passed straight as the format argument *
  *   to printf. Conversions like %x leak stack memory and %s dereferences*

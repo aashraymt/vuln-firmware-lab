@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# triage.sh — classify and deduplicate libFuzzer crash artifacts.
+# triage.sh, classify and deduplicate libFuzzer crash artifacts.
 #
 # Replays every file in build/crashes/ against the ASAN/UBSAN target, extracts
 # (bug class, crashing function) as a bucket key, and keeps the SMALLEST input

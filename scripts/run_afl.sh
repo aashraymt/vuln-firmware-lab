@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run_afl.sh — AFL++ campaign against the persistent-mode harness.
+# run_afl.sh, AFL++ campaign against the persistent-mode harness.
 #
 # AFL++ reaches length-triggered bugs (like the AUTH stack overflow) that
 # coverage-only fuzzers can stall on, because its havoc/splice stages grow
@@ -13,7 +13,7 @@ if ! command -v afl-fuzz >/dev/null 2>&1; then
     exit 1
 fi
 if [ ! -x build/fuzz_afl ]; then
-    echo "build/fuzz_afl missing — run scripts/build_all.sh (needs afl-clang-fast)"
+    echo "build/fuzz_afl missing, run scripts/build_all.sh (needs afl-clang-fast)"
     exit 1
 fi
 

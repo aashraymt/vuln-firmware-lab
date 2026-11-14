@@ -1,4 +1,4 @@
-/* harness_libfuzzer.c — libFuzzer entry point.
+/* harness_libfuzzer.c, libFuzzer entry point.
  *
  * libFuzzer calls LLVMFuzzerTestOneInput once per generated testcase. We hand
  * the raw bytes straight to fw_feed(), i.e. the exact path a serial client

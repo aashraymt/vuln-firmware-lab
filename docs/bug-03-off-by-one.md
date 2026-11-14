@@ -1,4 +1,4 @@
-# BUG 3 — Off-by-one NUL write in `cmd_cfg` (CWE-193)
+# BUG 3: off by one NUL write in cmd_cfg (CWE-193)
 
 ## Root cause
 
@@ -8,7 +8,7 @@ void cmd_cfg(const char *key)
     char   buf[32];
     size_t n = strlen(key);
 
-    if (n > sizeof(buf)) {    /* BUG: should be >=  */
+    if (n > sizeof(buf)) {    /* bug: should be >= */
         puts("CFG too long");
         return;
     }
@@ -17,37 +17,37 @@ void cmd_cfg(const char *key)
 }
 ```
 
-The length guard uses `>` where it must use `>=`. A key of exactly
-`sizeof(buf)` == 32 bytes passes the check. `memcpy` then fills all 32 bytes,
-and the terminator write `buf[n] = '\0'` with `n == 32` stores one byte past
-the end of the array. A one-byte overflow — the classic off-by-one — but still
-a memory-safety violation, and on a tighter stack layout the stray NUL can clip
-an adjacent variable or a saved register's low byte.
+The length guard uses `>` where it must use `>=`. A key of exactly `sizeof(buf)`,
+which is 32 bytes, passes the check. `memcpy` then fills all 32 bytes, and the
+terminator write `buf[n] = '\0'` with `n == 32` stores one byte past the end of
+the array. A one byte overflow, the classic off by one, but still a memory safety
+violation, and on a tighter stack layout the stray NUL can clip an adjacent
+variable or the low byte of a saved register.
 
 ## Minimal crashing input
 
 ```
-CFG BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB   (exactly 32-byte key)
+CFG BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB   (exactly a 32 byte key)
 ```
 
 `tests/repro/bug3_off_by_one.bin`.
 
 ## Sanitizer evidence
 
-Caught here by **UBSAN** (array-bounds), which pinpoints it precisely:
+This one is caught by UBSAN's array bounds check, which pinpoints it precisely:
 
 ```
 firmware/commands.c:125:5: runtime error: index 32 out of bounds for type 'char[32]'
 ```
 
-ASAN also flags the stack write when the byte lands in a redzone; UBSAN's
-array-bounds check is the crisper signal for a compile-time-sized array, which
-is why the reproducer check accepts either. Full trace:
+AddressSanitizer also flags the stack write when the byte lands in a redzone, so
+the reproducer check in `tests/verify.sh` accepts either signal. The UBSAN array
+bounds message is the crisper one for a compile time sized array. Full trace in
 `docs/evidence/bug3_off_by_one.asan.txt`.
 
-Off-by-ones are a good argument for sanitizer-driven testing: this one writes a
-single `\0` and, without instrumentation, usually "works fine" until the day
-the layout shifts and it silently corrupts the neighbour.
+Off by ones are a good argument for sanitizer driven testing. This one writes a
+single NUL and, without instrumentation, usually appears to work fine until the
+day the stack layout shifts and it silently corrupts the neighbor.
 
 ## The fix
 
@@ -59,5 +59,6 @@ if (n >= sizeof(buf)) {       /* reserve the last byte for the NUL */
 ```
 
 Equivalently, size the comparison to leave room for the terminator
-(`n > sizeof(buf) - 1`), or use a counted, always-terminating copy such as
-`snprintf(buf, sizeof(buf), "%s", key)`.
+(`n > sizeof(buf) - 1`), or use a counted, always terminating copy such as
+`snprintf(buf, sizeof(buf), "%s", key)`. This is `cmd_cfg` in
+`firmware/commands_fixed.c`, verified in [hardening.md](hardening.md).
