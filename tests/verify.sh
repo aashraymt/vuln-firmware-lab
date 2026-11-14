@@ -47,7 +47,7 @@ check_repro bug4_format_string.bin     "AddressSanitizer: SEGV"                 
 
 hdr "4. exploit, stack smash pops a shell"
 if command -v setarch >/dev/null 2>&1; then
-    EOUT=$(timeout 160 python3 exploit/exploit.py --base 0x7fffffff5440 --window 0x1400 --step 8 2>/dev/null)
+    EOUT=$(timeout 160 python3 exploit/exploit.py 2>/dev/null)
     if grep -q "uid=" <<<"$EOUT"; then
         ok "exploit popped shell: $(grep -m1 uid= <<<"$EOUT" | sed 's/^ *//')"
     else bad "exploit did not pop a shell"; fi

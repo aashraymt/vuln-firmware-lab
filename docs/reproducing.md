@@ -85,17 +85,19 @@ python3 exploit/exploit.py --interactive    # drop into the shell
 Expected tail:
 
 ```
-[+] SHELL via buffer @ 0x7fffffff54e0 (candidate 39)
+[*] stack top: 0x7ffffffff000 (from /proc/<pid>/maps)
+[+] SHELL via buffer @ 0x7fffffff5f10 (top-0x90f0, after 2064 tries)
 [+] proof:
       uid=0(root) gid=0(root) groups=0(root)
 ```
 
-The exact buffer address and candidate number vary with the environment, which
-is why the exploit scans rather than hard coding an address. If it does not
-land, widen the search with `--window 0x3000` or point `--base` at a nearby
-stack address from gdb. The exploit runs the child under `setarch -R`, which
-disables ASLR for that child process only. It does not change any system
-setting and needs no root beyond launching the process.
+The stack top and the exact buffer address vary between machines, so the exploit
+reads the target's own stack region from `/proc/<pid>/maps` and scans downward
+from the top rather than hard coding an address. If it does not land, scan deeper
+with `--max-depth 0x30000`, or pass `--base 0xADDR` to scan outward from a stack
+address you read in gdb. The exploit runs the child under `setarch -R`, which
+disables ASLR for that child process only. It does not change any system setting
+and needs no root beyond launching the process.
 
 ## NX demonstration
 

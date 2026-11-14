@@ -31,7 +31,7 @@ triage:
 	bash scripts/triage.sh
 
 exploit: build
-	python3 exploit/exploit.py --base 0x7fffffff5440 --window 0x1400 --step 8
+	python3 exploit/exploit.py
 
 nx-demo: build
 	python3 exploit/nx_demo.py

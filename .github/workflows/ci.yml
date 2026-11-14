@@ -102,8 +102,7 @@ jobs:
 
       - name: Pop a shell via BUG 1
         run: |
-          out=$(timeout 220 python3 exploit/exploit.py \
-                  --base 0x7fffffffe300 --window 0x4000 --step 8 || true)
+          out=$(timeout 220 python3 exploit/exploit.py || true)
           echo "$out"
           if grep -q 'uid=' <<<"$out"; then
             echo "SHELL POPPED on this runner"
