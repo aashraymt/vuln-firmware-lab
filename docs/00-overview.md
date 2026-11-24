@@ -20,12 +20,11 @@ Category: firmware.
 
 ## Why I built this
 
-The MITRE eCTF is two phases: design a secure embedded system against a
-challenge specification, then attack other teams' designs. Most of my public
-work is offensive, so I wanted one project that runs the whole loop end to end
-on a target shaped like an eCTF device: find the weakness, prove it with a
-working exploit, and then show the fix holding up under the same fuzzing that
-found the bug.
+Embedded security has two halves: build something that holds up, and break
+what someone else built. Most of my public work is offensive, so I wanted one
+project that runs the whole loop end to end on a target shaped like a small
+embedded device: find the weakness, prove it with a working exploit, and then
+show the fix holding up under the same fuzzing that found the bug.
 
 It is also the C and memory corruption sequel to Evo-Fuzz, my earlier Python
 fuzzer that targeted a web API with evolutionary input generation. Same
@@ -118,7 +117,7 @@ Defense: `firmware/commands_fixed.c` is the same set of handlers with every bug
 fixed by the minimal correct change. Linking the firmware against it produces a
 build that handles every curated reproducer cleanly and that AFL++ runs over
 without finding a single crash, where the vulnerable build gives up two dozen crashes
-in the same time. That contrast is the eCTF design phase in miniature and is
+in the same time. That contrast is the defensive half of the loop, and it is
 written up in [hardening.md](hardening.md).
 
 ## Reproduce
@@ -139,9 +138,9 @@ make nx-demo        # NX blocks the shellcode but not RIP control
 ## What I would do next
 
 1. Port the target to an ARM Cortex-M build under QEMU so the same loop runs on
-   the architecture family the eCTF hardware uses.
-2. Add a signed firmware update command and attack it, which puts the lab on
-   the secure boot ground the competition actually tests.
+   the class of microcontroller this kind of firmware actually ships on.
+2. Add a signed firmware update command and attack it, which moves the lab onto
+   secure boot, the next layer down from command parsing.
 3. Write the heap staged ROP and stack pivot that reaches code execution under
    NX on this target, which [nx-and-rop.md](nx-and-rop.md) specifies but does
    not yet implement.

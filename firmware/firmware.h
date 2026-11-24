@@ -1,6 +1,6 @@
 /* firmware.h, Vuln-Firmware Lab
  *
- * A deliberately vulnerable "device" modeled on an eCTF-style target:
+ * A deliberately vulnerable "device" modeled on a small embedded target:
  * a command parser speaking a line-oriented ASCII protocol over what would
  * be a UART. Real hardware reads bytes off a serial RX ring; here we read
  * bytes from stdin (or from a fuzzer-provided buffer) so the exact same
@@ -31,7 +31,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define FW_VERSION      "vuln-fw 1.0 (eCTF-style target)"
+#define FW_VERSION      "vuln-fw 1.0 (training target)"
 #define FW_MAX_LINE     4096    /* max bytes we accept for one command line */
 #define RECORD_SIZE     8       /* bytes per WRITE record (used in BUG 2)   */
 

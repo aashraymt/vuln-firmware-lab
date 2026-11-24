@@ -129,10 +129,10 @@ exploit page measures what each one forces an attacker to do:
   known destination size overflow.
 - `-Werror=format-security`, turns the format string bug into a build failure.
 
-## Why this matters for the eCTF
+## Why the defensive half matters
 
-The competition is a design phase followed by an attack phase. A lab that only
-breaks things demonstrates the attack phase. The hardened build plus this
-evidence demonstrates the design phase on the same target: a specific weakness,
-a specific fix, and a fresh campaign confirming the fix holds. That is the loop
-the competition runs, shown end to end on one codebase.
+A lab that only breaks things shows half the skill set. The hardened build plus
+this evidence shows the other half on the same target: a specific weakness, a
+specific fix, and a fresh campaign confirming the fix holds. Finding the bug,
+exploiting it, and proving the repair is the whole loop, shown end to end on one
+codebase.
