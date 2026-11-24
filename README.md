@@ -8,8 +8,7 @@ out, triage the crashes, weaponize one into a shell, write the fix, and prove
 the fix holds under the same fuzzing that found the bug.
 
 The target is a small C device that speaks a line oriented command protocol over
-what would be a UART, the same shape as a [MITRE eCTF](https://ectf.mitre.org/)
-embedded target. It carries four independent, documented memory safety bugs. The
+what would be a UART, the same shape as an embedded target. It carries four independent, documented memory safety bugs. The
 offensive side harnesses it under libFuzzer and AFL++, triages the crashes back
 to root cause, and turns the stack overflow into a working `ret2shellcode`
 exploit that pops `/bin/sh`. The defensive side re links the same firmware
