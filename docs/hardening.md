@@ -107,6 +107,10 @@ vulnerable handlers (build/fuzz_afl)   60s  ->  24 unique crashes saved
 hardened   handlers (build/fuzz_fixed) 60s  ->   0 unique crashes saved
 ```
 
+![AFL++ on the vulnerable build: 24 unique crashes](evidence/proof_afl_vulnerable_24_crashes.png)
+
+![AFL++ on the hardened build: 0 crashes over 60s](evidence/proof_verify_fixed_0_crashes.png)
+
 Run it with `FUZZ_SECS=60 bash tests/verify_fixed.sh`, which adds a campaign
 step and fails if the hardened build gives up a single crash.
 

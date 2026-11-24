@@ -7,8 +7,8 @@ name: ci
 #                            address scan is stack-layout sensitive across hosts,
 #                            so this job reports but never blocks a green build.
 #
-# Runner: ubuntu-latest (24.04) -> clang 18, so libclang-rt-18-dev is the ASAN
-# runtime. Bump the version here if the runner image moves to a newer clang.
+# Runner: pinned to ubuntu-24.04 -> clang 18, so libclang-rt-18-dev is the ASAN
+# runtime. ubuntu-latest moved to 26.04 in Nov 2026; keep this pin.
 
 on:
   push:
@@ -18,9 +18,9 @@ on:
 jobs:
   detect:
     name: build + bug detection (gating)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install toolchain
         run: |
@@ -72,9 +72,9 @@ jobs:
 
   harden:
     name: hardened build is not vulnerable (gating)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install toolchain
         run: |
@@ -87,10 +87,10 @@ jobs:
 
   exploit:
     name: stack-smash exploit (non-gating)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install toolchain
         run: |

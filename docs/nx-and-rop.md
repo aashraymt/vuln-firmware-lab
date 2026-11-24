@@ -49,6 +49,8 @@ execution faults at exactly that address.
     result: RIP is fully attacker-controlled under NX.
 ```
 
+![make nx-demo: shellcode blocked, RIP control intact](evidence/proof_nx_demo.png)
+
 RIP is `0x424242424242`, the value I supplied. Control of the instruction
 pointer is the prerequisite for return oriented programming. NX forces the
 attacker to reuse existing executable code (the binary and libc) instead of

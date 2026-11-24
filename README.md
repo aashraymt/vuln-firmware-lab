@@ -21,10 +21,24 @@ nothing.
 > real. It exists to be fuzzed and debugged on your own machine. See
 > [SECURITY.md](SECURITY.md).
 
-This is the C and memory corruption sequel to Evo-Fuzz, my Python, web API
-target, first fuzzer: same instinct, generate inputs and find the crash, one
-abstraction layer down, in the land of saved return addresses and sanitizer
-redzones.
+This is the C and memory corruption sequel to
+[Evo-Fuzz](https://github.com/aashraymt/Evo-Fuzz), my Python, web API target,
+first fuzzer: same instinct, generate inputs and find the crash, one abstraction
+layer down, in the land of saved return addresses and sanitizer redzones.
+
+## Proof
+
+One command proves the offensive half and one proves the defensive half. Both
+runs below are from a clean build on my own machine (Kali on WSL 2):
+
+![make verify 13/13 and make verify-fixed 11/11](docs/evidence/proof_make_verify.png)
+
+The same AFL++ harness, 60 seconds each: the vulnerable handlers give up 24
+unique crashes, the hardened handlers give up none.
+
+![AFL++ on the vulnerable build: 24 unique crashes](docs/evidence/proof_afl_vulnerable_24_crashes.png)
+
+![AFL++ on the hardened build: 0 crashes over 60s](docs/evidence/proof_verify_fixed_0_crashes.png)
 
 ## The four bugs
 
